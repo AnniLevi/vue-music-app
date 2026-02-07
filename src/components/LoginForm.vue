@@ -6,7 +6,7 @@
   >
     {{ loginAlertMessage }}
   </div>
-  <vee-form :validation-schema="loginSchema" @submit="login">
+  <vee-form :validation-schema="loginSchema" @submit="submit">
     <!-- Email -->
     <div class="mb-3">
       <label class="inline-block mb-2">Email</label>
@@ -41,6 +41,9 @@
 <script setup>
 import { ErrorMessage } from 'vee-validate'
 import { ref } from 'vue'
+import { useUserStore } from '@/stores/user'
+
+const userStore = useUserStore()
 
 const loginSchema = {
   email: 'required|email',
@@ -52,18 +55,25 @@ const loginShowAlert = ref(false)
 const loginAlertVariant = ref('bg-blue-500')
 const loginAlertMessage = ref('Please wait while we log you in.')
 
-const login = (values) => {
-  console.log(values)
-
+const submit = async (values) => {
   loginInSubmission.value = true
   loginShowAlert.value = true
   loginAlertVariant.value = 'bg-blue-500'
   loginAlertMessage.value = 'Please wait while we log you in.'
 
+  try {
+    await userStore.authenticate(values)
+  } catch (error) {
+    loginInSubmission.value = false
+    loginAlertVariant.value = 'bg-red-500'
+    loginAlertMessage.value = 'Login failed! ' + error.message
+    return
+  }
+
   //success
   loginAlertVariant.value = 'bg-green-500'
   loginAlertMessage.value = 'Login successful!'
 
-  //redirect user
+  window.location.reload();
 }
 </script>

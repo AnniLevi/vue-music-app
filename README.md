@@ -7,6 +7,7 @@
 - Cypress
 - Eslint
 - Prettier
+- Firebase
 
 
 

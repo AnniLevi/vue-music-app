@@ -6,7 +6,7 @@
   >
     {{ registrationAlertMessage }}
   </div>
-  <vee-form :validation-schema="schema" @submit="register" :initial-values="userData">
+  <vee-form :validation-schema="schema" @submit="submit" :initial-values="userData">
     <!-- Name -->
     <div class="mb-3">
       <label class="inline-block mb-2">Name</label>
@@ -100,13 +100,16 @@
 <script setup>
 import { ErrorMessage } from 'vee-validate'
 import { ref } from 'vue'
+import { useUserStore } from '@/stores/user'
+
+const userStore = useUserStore()
 
 const schema = {
   name: 'required|min:3|max:100|alpha_spaces',
   email: 'required|min:5|max:100|email',
   age: 'required|min_value:18|max_value:100',
   password: 'required|min:8|max:50',
-  confirm_password: 'passwords_mismatch|confirmed:@password|min:8|max:50',
+  confirm_password: 'passwords_mismatch:@password|min:8|max:50',
   country: 'required|country_excluded:Antarctica,Mexico',
   tos: 'tos',
 }
@@ -120,18 +123,25 @@ const registrationShowAlert = ref(false)
 const registrationAlertVariant = ref('bg-blue-500')
 const registrationAlertMessage = ref('Please wait while we register your account.')
 
-const register = (values) => {
-  console.log(values)
-
+const submit = async (values) => {
   registrationShowAlert.value = true
   registrationInSubmission.value = true
   registrationAlertVariant.value = 'bg-blue-500'
   registrationAlertMessage.value = 'Please wait while we register your account.'
 
+  try {
+    await userStore.register(values)
+  } catch (error) {
+    registrationInSubmission.value = false
+    registrationAlertVariant.value = 'bg-red-500'
+    registrationAlertMessage.value = 'Registration failed! ' + error.message
+    return
+  }
+
   // success
   registrationAlertVariant.value = 'bg-green-500'
   registrationAlertMessage.value = 'Registration successful!'
 
-  // redirect user
+  window.location.reload();
 }
 </script>
