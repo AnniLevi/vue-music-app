@@ -1,21 +1,23 @@
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
+import 'firebase/compat/storage';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyDp20DAHIv94FsM-Ogrvf-arl93nbp-nqg',
-  authDomain: 'music-950c9.firebaseapp.com',
-  projectId: 'music-950c9',
-  storageBucket: 'music-950c9.firebasestorage.app',
-  messagingSenderId: '755928603428',
-  appId: '1:755928603428:web:c0ac85dccf9b700be3b1b1',
-};
+  apiKey: import.meta.env.VITE_API_KEY,
+  authDomain: import.meta.env.VITE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_APP_ID,
+}
 
 firebase.initializeApp(firebaseConfig);
 
 const auth = firebase.auth();
 const db = firebase.firestore();
+const storage = firebase.storage();
 
 const usersCollection = db.collection('users');
 
-export { auth, db, usersCollection };
+export { auth, db, storage, usersCollection };
