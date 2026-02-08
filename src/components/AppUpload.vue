@@ -87,7 +87,6 @@ const upload = (event) => {
         uploads.value[uploadIndex].variant = 'bg-green-400';
         uploads.value[uploadIndex].icon = 'fas fa-check';
         uploads.value[uploadIndex].textClass = 'text-green-400';
-        })
       },
     )
   })
